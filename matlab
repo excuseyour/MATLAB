@@ -1,7 +1,7 @@
-#继承情况下的Constructor
+# 继承情况下的Constructor
 在子类构造函数中调用基类构造函数时，obj=obj@Base()；@前的obj必须是子类构造函数的输出参数，并且，基类构造函数的输出也是子类的obj，
 没有新创建一个对象。
-
+```
 classdef Base<handle
     properties
         b=1;
@@ -16,7 +16,8 @@ classdef Base<handle
         end
     end
 end
-
+```
+```
 classdef Derived<Base
     properties
         a=1;
@@ -31,4 +32,5 @@ classdef Derived<Base
         end
     end
 end
+```
 子类中的输出对象名称与基类中的也不同。
