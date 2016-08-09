@@ -1,0 +1,57 @@
+1. value类与handle类不能同时被继承，除非value类是HandleCompatible。继承的子类是handle类。
+2. 若子类继承两个value类，其中一个是HandleCompatible的，子类**不是**HandleCompatible的。子类是value类。
+
+#### MATLAB继承同名方法
+**在子类中除了同名方法reload外，其他地方不能调用父类的同名方法reload**
+基类
+```
+classdef MySuper
+    properties
+        X
+        Y
+    end
+    methods
+        function S=saveobj(obj)
+            S.PointX=obj.X;
+            S.PointY=obj.Y;
+        end
+        function obj=reload(obj,S)
+            obj.X=S.PointX;
+            obj.Y=S.PointY;
+        end
+    end
+    methods (Static)
+        function obj=loadobj(S)
+            obj=MySuper;
+            obj=reload(obj,S);
+        end
+    end
+end
+```
+子类
+```
+classdef MySub<MySuper
+    properties
+        Z
+    end
+    methods
+        function S=saveobj(obj)
+            S=saveobj@MySuper(obj);
+            S.PointZ=obj.Z;
+        end
+    end
+    methods
+        function obj=reload(obj,S)
+            obj=reload@MySuper(obj,S);
+            obj.Z=S.PointZ;
+        end
+    end
+    methods (Static)
+        function obj=loadobj(S)
+            obj=MySub;
+%           obj=reload@MySuper(obj,S);  **报错**
+            obj=reload(obj,S);
+        end
+    end
+end
+```
